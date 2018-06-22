@@ -1,0 +1,23 @@
+LocatorBuilders.add('selenideID', function(e) {
+  if (e.getAttribute("selenide_id")) {
+    return 'css=[selenide_id="' + e.getAttribute("selenide_id") + '"]';
+  }else{
+    var array = [e];
+    while (true) {
+      if (array[0].parentNode.getAttribute("selenide_id")) {
+        break;
+      }else if(array[0].parentNode.tagName == 'HTML'){
+        return 'not_found';
+      }else{
+        array.unshift(array[0].parentNode);
+      }
+    }
+    var sub_path = '';
+    sub_path += 'css=[selenide_id="' + array[0].parentNode.getAttribute("selenide_id") + '"]';
+    array.forEach( function(element) {
+      sub_path += ' :nth-child(' + ( [].indexOf.call(element.parentNode.children, element) + 1 ) + ')';
+    });
+    return sub_path;
+  }
+  return null;
+});
